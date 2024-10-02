@@ -1,0 +1,7 @@
+# WebApp
+
+## Package
+```
+./gradlew distZip
+```
+
