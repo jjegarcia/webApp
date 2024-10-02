@@ -39,10 +39,10 @@ val oAuthPersistence = InsecureCookieBasedOAuthPersistence("Google")
 
 // pre-defined configuration exist for common OAuth providers
 val oauthProvider = OAuthProvider.google(
-        JavaHttpClient(),
-        Credentials(googleClientId, googleClientSecret),
-        Uri.of("http://localhost:9000/oauth/callback"),
-        oAuthPersistence
+    JavaHttpClient(),
+    Credentials(googleClientId, googleClientSecret),
+    Uri.of("http://localhost:9000/oauth/callback"),
+    oAuthPersistence
 )
 val app: HttpHandler = routes(
     "/ping" bind GET to {
@@ -64,13 +64,16 @@ val app: HttpHandler = routes(
         Response(OK).with(view of viewModel)
     },
 
-    "/testing/kotest" bind GET to {request ->
+    "/testing/kotest" bind GET to { request ->
         Response(OK).body("Echo '${request.bodyString()}'")
+    },
+    "/testing/kotest2" bind GET to { request ->
+        Response(OK).body("Echo 'Test'")
     },
 
     "/oauth" bind routes(
-            "/" bind GET to oauthProvider.authFilter.then { Response(OK).body("hello!") },
-            "/callback" bind GET to oauthProvider.callback
+        "/" bind GET to oauthProvider.authFilter.then { Response(OK).body("hello!") },
+        "/callback" bind GET to oauthProvider.callback
     ),
 
     "/webhook" bind GET to {
@@ -85,7 +88,7 @@ val app: HttpHandler = routes(
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
 
-    val server = printingApp.asServer(SunHttp(9000)).start()
+    val server = printingApp.asServer(SunHttp(9090)).start()
 
     println("Server started on " + server.port())
 }
